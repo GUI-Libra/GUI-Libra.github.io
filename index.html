@@ -332,7 +332,7 @@
       width: 100%;
       border-collapse: collapse;
       font-size: 1rem;
-      margin-bottom: 16px;
+      margin-bottom: 0;
       border-radius: 6px;
       overflow: hidden;
       border: 1px solid var(--border);
@@ -353,6 +353,12 @@
 
     .results-table tr:last-child td {
       border-bottom: none;
+    }
+
+    .table-block {
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
     }
 
     .results-table .highlight {
@@ -380,7 +386,7 @@
       padding: 32px 0;
     }
     .results-section .container {
-      max-width: 880px;
+      max-width: 1024px;
     }
 
     /* Benchmarks */
@@ -608,13 +614,13 @@
 
       <div class="links">
         <a href="#" class="btn btn-primary">📄 Paper (PDF)</a>
-        <a href="https://github.com/GUI-Libra" class="btn btn-secondary" target="_blank">
+        <a href="https://github.com/GUI-Libra/GUI-Libra" class="btn btn-secondary" target="_blank">
           <img src="https://github.githubassets.com/favicons/favicon.svg" alt="" class="btn-icon"> Code
         </a>
         <a href="https://huggingface.co/GUI-Libra" class="btn btn-secondary" target="_blank">
           <img src="https://huggingface.co/favicon.ico" alt="" class="btn-icon"> Models
         </a>
-        <a href="#" class="btn btn-secondary">
+        <a href="https://huggingface.co/GUI-Libra" class="btn btn-secondary" target="_blank">
           <img src="https://huggingface.co/favicon.ico" alt="" class="btn-icon"> Dataset
         </a>
       </div>
@@ -676,11 +682,22 @@
     </div>
   </section>
 
+  <section class="overview">
+    <div class="container">
+      <h2>Dataset Analysis</h2>
+      <figure>
+        <img src="assets/dataset_analysis.png" alt="GUI-Libra-81K Dataset Analysis" width="1050">
+        <figcaption>Figure 3: (a)(b) Data source distribution for SFT and RL. (c) Action type distribution of GUI-Libra-81K. (d) Comparison of step index distributions between our SFT and RL datasets.</figcaption>
+      </figure>
+    </div>
+  </section>
+
   <section class="results-section">
     <div class="container">
       <h2>Results</h2>
       <p class="results-intro">GUI-Libra consistently improves both step-wise accuracy and end-to-end task completion across web and mobile benchmarks.</p>
 
+      <div class="table-block">
       <h3>AndroidWorld (20 steps)</h3>
       <p class="table-caption">Acc. = final average success rate. * from original papers.</p>
       <table class="results-table">
@@ -711,7 +728,9 @@
           <tr><td>GPT-5 + UGround-v1-7B</td><td>48.7</td><td>—</td></tr>
         </tbody>
       </table>
+      </div>
 
+      <div class="table-block">
       <h3>WebArena-Lite-v2 (15 steps)</h3>
       <p class="table-caption">Average = final average success rate across GitLab, MAP, Reddit, Shopping, ShoppingAdmin. * from Liu et al. (2025c).</p>
       <table class="results-table">
@@ -740,7 +759,9 @@
           <tr><td>GPT-4o + ScaleCUA-7B*</td><td>28.6</td><td>—</td></tr>
         </tbody>
       </table>
+      </div>
 
+      <div class="table-block">
       <h3>Online-Mind2Web (30 steps)</h3>
       <p class="table-caption">o4-mini and WebJudge-7B as judges. Avg. Overall = average of both judges' Overall scores.</p>
       <table class="results-table">
@@ -770,7 +791,30 @@
           <tr><td>GPT-4.1 + UGround-v1-7B</td><td>22.7</td><td>36.7</td><td>29.7</td><td>—</td></tr>
         </tbody>
       </table>
+      </div>
 
+    </div>
+  </section>
+
+  <section class="overview">
+    <div class="container">
+      <h2>Mitigating Grounding Degradation</h2>
+      <p class="results-intro" style="text-align: center; max-width: 720px; margin: 0 auto 24px;">Long chain-of-thought outputs tend to degrade grounding accuracy. Action-aware SFT (ASFT) with token reweighting (α<sub>a</sub>, α<sub>g</sub>) and direct-action data effectively preserves grounding under long CoT. GUI-Libra (ASFT+RL) achieves 83.4% and 89.3% grounding accuracy for 3B and 7B models in Reason mode.</p>
+      <figure>
+        <img src="assets/grounding_degradation.png" alt="Grounding degradation mitigation: accuracy vs response length and model comparison" width="1050">
+        <figcaption>Figure 8 & Table 8: (Left) Grounding correctness vs response length—ASFT (α<sub>a</sub>=3, α<sub>g</sub>=6) maintains stable accuracy while Base/SFT degrade. (Right) Grounding accuracy and avg tokens: GUI-Libra (ASFT+RL) outperforms SFT and ASFT in Reason mode.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="overview">
+    <div class="container">
+      <h2>KL Regularization Improves Offline-to-Online Predictability</h2>
+      <p class="results-intro" style="text-align: center; max-width: 720px; margin: 0 auto 24px;">KL regularization in conservative RL substantially strengthens the correlation between offline and online performance, making offline evaluation a more reliable predictor.</p>
+      <figure>
+        <img src="assets/kl_regularization_analysis.png" alt="KL regularization impact on offline-to-online predictability" width="1050">
+        <figcaption>Figure 10: (a) Online vs offline performance scatter plot (Pearson r = 0.76). (b) Comparison of correlation coefficients: KL regularization (blue) increases Pearson from 0.63 to 0.89 and Spearman from 0.53 to 0.83, improving predictability.</figcaption>
+      </figure>
     </div>
   </section>
 
