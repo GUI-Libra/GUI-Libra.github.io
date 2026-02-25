@@ -657,7 +657,7 @@
     <div class="container">
       <h2>Overview</h2>
       <p class="abstract">
-        Open-source native GUI agents have made strides in visual grounding and low-level control, but still fall short on long-horizon tasks that require both planning and precise execution. <strong>We pinpoint two root causes: scarce high-quality reasoning data aligned with actions, and post-training pipelines that ignore the specifics of GUI agents.</strong> In particular, long chain-of-thought SFT tends to degrade grounding, while step-wise RL suffers from partial verifiability—multiple valid actions exist per step, yet only one is used for verification. <strong>GUI-Libra tackles these issues with a tailored recipe: an 81K curated reasoning dataset, action-aware SFT that balances reasoning and direct-action supervision with token reweighting, and conservative RL with KL regularization and success-adaptive scaling.</strong> On AndroidWorld, Online-Mind2Web, and WebArena-Lite-v2, GUI-Libra-4B and GUI-Libra-8B consistently outperform their base models, with gains up to +15.6% and +12.2% on AndroidWorld, +4.0% and +8.7% on Online-Mind2Web, and +12.5% and +11.3% on WebArena-Lite-v2.
+        Open-source native GUI agents have made rapid progress in visual grounding and low-level control, but still fall short on long-horizon navigation tasks that require both high-level planning and precise execution. <strong>We pinpoint two limitations: scarce high-quality reasoning data aligned with actions, and post-training pipelines that ignore the specifics of GUI agents.</strong> In particular, long chain-of-thought SFT tends to degrade grounding accuracy, while step-wise RLVR-style training suffers from partial verifiability (multiple valid actions exist per step, yet only one is used for verification). <strong>GUI-Libra tackles these issues with a tailored recipe: an 81K curated reasoning dataset, action-aware SFT that balances reasoning and direct-action supervision with token reweighting, and conservative RL with KL regularization and success-adaptive negative gradient scaling.</strong> On both offline and online benchmarks (including AndroidWorld, Online-Mind2Web, and WebArena-Lite-v2), GUI-Libra-4B and GUI-Libra-8B consistently outperform strong native GUI agents and even proprietary models.
       </p>
     </div>
   </section>
@@ -672,11 +672,11 @@
         </div>
         <div class="method-card">
           <h3>Action-Aware SFT</h3>
-          <p>Mixed reasoning-then-action and direct-action supervision. Action-aware token reweighting to emphasize action and grounding tokens, mitigating CoT-induced grounding degradation.</p>
+          <p>Mixing reasoning-then-action and direct-action supervision and action-aware token reweighting that emphasizes action and grounding tokens, mitigating CoT-induced grounding degradation.</p>
         </div>
         <div class="method-card">
           <h3>Conservative RL</h3>
-          <p>KL-regularized GRPO under partial verifiability. Success-adaptive negative gradient scaling to reduce bias from ambiguously negative outcomes.</p>
+          <p>KL-regularized GRPO under partial verifiability improves offline-to-online predictability. Success-adaptive negative gradient scaling to reduce bias from ambiguously negative rewards.</p>
         </div>
       </div>
     </div>
@@ -687,7 +687,7 @@
       <h2>Dataset Analysis</h2>
       <figure>
         <img src="assets/dataset_analysis.png" alt="GUI-Libra-81K Dataset Analysis" width="1050">
-        <figcaption>Figure 3: (a)(b) Data source distribution for SFT and RL. (c) Action type distribution of GUI-Libra-81K. (d) Comparison of step index distributions between our SFT and RL datasets.</figcaption>
+        <figcaption>Figure 3: (a)(b) Data source distribution for SFT and RL. (c) Action type distribution of GUI-Libra-81K. (d) Data filtering for RL mitigates early-step bias. </figcaption>
       </figure>
     </div>
   </section>
@@ -799,10 +799,10 @@
   <section class="overview">
     <div class="container">
       <h2>Mitigating Grounding Degradation</h2>
-      <p class="results-intro" style="text-align: center; max-width: 720px; margin: 0 auto 24px;">Long chain-of-thought outputs tend to degrade grounding accuracy. Action-aware SFT (ASFT) with token reweighting (α<sub>a</sub>, α<sub>g</sub>) and direct-action data effectively preserves grounding under long CoT. GUI-Libra (ASFT+RL) achieves 83.4% and 89.3% grounding accuracy for 3B and 7B models in Reason mode.</p>
+      <p class="results-intro" style="text-align: center; max-width: 720px; margin: 0 auto 24px;">Long chain-of-thought outputs tend to degrade grounding accuracy. Action-aware SFT (ASFT) with token reweighting (α<sub>a</sub>, α<sub>g</sub>) and direct-action data effectively preserves grounding under long CoT. GUI-Libra (ASFT+RL) fully mitigates the grounding degradation in Reason mode, outperforming the No-Reason mode despite generating longer CoT.</p>
       <figure>
         <img src="assets/grounding_degradation.png" alt="Grounding degradation mitigation: accuracy vs response length and model comparison" width="1050">
-        <figcaption>Figure 8 & Table 8: (Left) Grounding correctness vs response length—ASFT (α<sub>a</sub>=3, α<sub>g</sub>=6) maintains stable accuracy while Base/SFT degrade. (Right) Grounding accuracy and avg tokens: GUI-Libra (ASFT+RL) outperforms SFT and ASFT in Reason mode.</figcaption>
+        <figcaption>Figure 8 & Table 8: (Left) Grounding correctness vs response length—ASFT. (Right) Ablations of ASFT and RL on average grounding accuracy and avg tokens in both Reason and No-Reason modes.</figcaption>
       </figure>
     </div>
   </section>
@@ -810,7 +810,7 @@
   <section class="overview">
     <div class="container">
       <h2>KL Regularization Improves Offline-to-Online Predictability</h2>
-      <p class="results-intro" style="text-align: center; max-width: 720px; margin: 0 auto 24px;">KL regularization in conservative RL substantially strengthens the correlation between offline and online performance, making offline evaluation a more reliable predictor.</p>
+      <p class="results-intro" style="text-align: center; max-width: 720px; margin: 0 auto 24px;">KL regularization substantially strengthens the correlation between offline and online performance by controlling the policy distribution and reward ambiguity, making offline evaluation a more reliable predictor.</p>
       <figure>
         <img src="assets/kl_regularization_analysis.png" alt="KL regularization impact on offline-to-online predictability" width="1050">
         <figcaption>Figure 10: (a) Online vs offline performance scatter plot (Pearson r = 0.76). (b) Comparison of correlation coefficients: KL regularization (blue) increases Pearson from 0.63 to 0.89 and Spearman from 0.53 to 0.83, improving predictability.</figcaption>
